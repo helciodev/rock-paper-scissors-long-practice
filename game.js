@@ -52,16 +52,25 @@ function getWinner(move1, move2) {
 }
 
 function getCPUMove() {
-  // Your code here
+  const validMoveKeys = Object.keys(VALID_MOVES);
+  const randomIndex = Math.floor(Math.random() * validMoveKeys.length);
+  return validMoveKeys[randomIndex];
 }
 
 function processMove(cmd, cpu) {
   // Your code here
+  console.log(`You pick ${cmd}, computer picks ${cpu}.`);
+  getWinner(cmd, cpu);
 }
 
+function showLossesTieOrWins() {
+  if (ties || wins || losses) {
+    console.log(`${wins} wins - ${losses} losses - ${ties} ties`);
+  }
+}
 /******************************* MAIN FUNCTION *******************************/
 function promptInput(rl) {
-  console.log(`${wins} wins - ${losses} losses - ${ties} ties`);
+  showLossesTieOrWins();
   rl.question("> ", (cmd) => {
     cmd = cmd.toLowerCase();
 
@@ -71,12 +80,8 @@ function promptInput(rl) {
       rl.close();
       return;
     } else if (VALID_MOVES[cmd]) {
-      const validMoveKeys = Object.keys(VALID_MOVES);
-      const randomIndex = Math.floor(Math.random() * validMoveKeys.length);
-      const cpu = validMoveKeys[randomIndex];
-
-      console.log(`You pick ${cmd}, computer picks ${cpu}.`);
-      getWinner(cmd, cpu);
+      const cpu = getCPUMove();
+      processMove(cmd, cpu);
     } else {
       console.log("\nInvalid command.\n");
       printHelp();
@@ -93,11 +98,7 @@ function initializeGame() {
     output: process.stdout,
   });
   console.log("Welcome to Rock/Paper/Scissors\n");
-  console.log("  Type 'r' for Rock");
-  console.log("  Type 'p' for Paper");
-  console.log("  Type 's' for Scissors");
-  console.log("  Type 'q' to quit");
-  console.log("  Type 'h' for a list of valid commands\n");
+  printHelp();
 
   promptInput(rl);
 }
